@@ -7,6 +7,7 @@ const start = async () => {
     try {
         const PORT = process.env.PORT || 5001;
         const app = await core_1.NestFactory.create(app_module_1.AppModule);
+        app.enableCors();
         const config = new swagger_1.DocumentBuilder()
             .setTitle('API')
             .setDescription('TM API')
