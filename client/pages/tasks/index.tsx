@@ -1,23 +1,23 @@
 import React from "react";
-import { useRouter } from "next/router";
 import { ITask } from "../../types/task";
-import TaskList from "../../components/Task/TaskList"
+import Link from "next/link";
 import MainLayout from "../../layouts/MainLayout";
+import TaskItem from "../../components/Task/TaskItem";
+import TasksList from "../../components/Task/TasksList";
 
-const Index = () => {
-  const router = useRouter();
-  const tasks: ITask[] = [
-      { id: 1, title: 'Задача 1', authorId: 1, description: 'Текст'},
-      { id: 2, title: 'Задача 2', authorId: 1, description: 'Текст'},
-      { id: 3, title: 'Задача 3', authorId: 1, description: `Текст`},
-  ];
-
-  return (
-    <MainLayout>
-      <h1>Список задач</h1>
-      <TaskList tasks={tasks} />
-    </MainLayout>
-  );
+interface TasksProps {
+    tasks: ITask[];
 }
 
-export default Index;
+const Tasks: React.FC<TasksProps> = ({ tasks }) => {
+    return <TasksList tasks={tasks}></TasksList>;
+};
+
+export const getServerSideProps = async () => {
+    const res = await fetch(`http://localhost:5001/task/`);
+    const data = await res.json();
+
+    return { props: { tasks: data } };
+};
+
+export default Tasks;

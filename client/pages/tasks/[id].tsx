@@ -1,30 +1,32 @@
 import React from "react";
 import { ITask } from "../../types/task";
 import Link from "next/link";
+import MainLayout from "../../layouts/MainLayout";
 
-interface TaskItemProps {
-  task: ITask;
+interface TaskProps {
+    task: ITask;
 }
 
-const TaskItem: React.FC<TaskItemProps> = ({task}) => {
-  console.log(task);
-  return (
-    <div>
-      {/*<Link href={`/tasks/${task.id}`}>*/}
-      {/*  {task.title}*/}
-      {/*</Link>*/}
-      {/*{task?.description}*/}
-    </div>
-  );
+const Task: React.FC<TaskProps> = ({ task }) => {
+    console.log(task);
+    return (
+        <MainLayout>
+            {task.title}
+            {task.description}
+            {/*<Link href={`/tasks/${task.id}`}>*/}
+            {/*  {task.title}*/}
+            {/*</Link>*/}
+            {/*{task?.description}*/}
+        </MainLayout>
+    );
 };
 
-export async function getServerSideProps() {
-  // Fetch data from external API
-  const res = await fetch(`http://localhost:5001/api/tasks/getOne`)
-  const task = await res.json()
+export const getServerSideProps = async (context) => {
+    const { id } = context.params;
+    const res = await fetch(`http://localhost:5001/task/${id}`);
+    const task = await res.json();
 
-  // Pass data to the page via props
-  return { props: { task } }
-}
+    return { props: { task } };
+};
 
-export default TaskItem;
+export default Task;

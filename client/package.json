@@ -11,6 +11,7 @@
   "dependencies": {
     "@types/node": "18.11.8",
     "@types/react": "18.0.24",
+    "@zeit/next-sass": "^1.0.1",
     "next": "12",
     "react": "18.2.0",
     "react-dom": "18.2.0",
