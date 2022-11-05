@@ -39,3 +39,5 @@ server/node_modules
 client/.next/cache
 .idea
 client/.next
+server/dist
+server/dist
