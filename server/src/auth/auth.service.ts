@@ -2,18 +2,19 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthDto } from './dto/auth.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { Request, Response } from 'express';
+import { request, Request, Response } from 'express';
 
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService, private jwt: JwtService) {}
 
-  async signup(dto: AuthDto) {
+  async register(dto: AuthDto) {
     const { email, password } = dto;
 
     const isUserExist = await this.prisma.user.findUnique({ where: { email } });
@@ -34,7 +35,7 @@ export class AuthService {
     return { message: 'signup was successful' };
   }
 
-  async signin(dto: AuthDto, req: Request, res: Response) {
+  async login(dto: AuthDto, req: Request, res: Response) {
     const { email, password } = dto;
 
     const foundUser = await this.prisma.user.findUnique({ where: { email } });
@@ -61,13 +62,34 @@ export class AuthService {
       throw new ForbiddenException();
     }
 
-    res.cookie('token', token);
+    res.cookie('token', token, { httpOnly: true });
 
-    return res.send({ message: 'Logged in successfuly' });
+    return res.send({ message: 'Logged in successfully' });
   }
-  async signout(req: Request, res: Response) {
+
+  async logout(req: Request, res: Response) {
     res.clearCookie('token');
+
     return res.send({ message: 'Logged out successfully' });
+  }
+
+  async getUser(req: Request, res: Response) {
+    try {
+      const cookie = req.cookies['token'];
+
+      const data = await this.jwt.verifyAsync(cookie);
+
+      if (!data) {
+        throw new UnauthorizedException();
+      }
+
+      const user = await this.prisma.user.findUnique({ id: data['id'] });
+      const { password, ...result } = user;
+
+      return result;
+    } catch (e) {
+      throw new UnauthorizedException();
+    }
   }
 
   async hashPassword(password: string) {

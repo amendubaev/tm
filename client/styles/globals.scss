@@ -1,12 +1,12 @@
-@import "./colors.module"; 
+@import "./colors.module";
 
 .body {
-  padding: 0;
-  margin: 0;
-  background: $primary-color;
-  color: $text-color;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    padding: 0;
+    margin: 0;
+    background: $primary-color;
+    color: $text-color;
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+        Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 // @media (prefers-color-scheme: dark) {
 //   html {

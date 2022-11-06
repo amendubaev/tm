@@ -1,11 +1,11 @@
 import React from "react";
 import Header from "../components/Header";
 interface Props {}
-const MainLayout: React.FC<React.PropsWithChildren<Props>> = ({ children }) => {
+const MainLayout: React.FC<React.PropsWithChildren<Props>> = (props) => {
     return (
         <>
             <Header />
-            {children}
+            {props.children}
         </>
     );
 };
