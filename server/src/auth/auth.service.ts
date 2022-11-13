@@ -83,7 +83,9 @@ export class AuthService {
         throw new UnauthorizedException();
       }
 
-      const user = await this.prisma.user.findUnique({ id: data['id'] });
+      const userID = data['id'];
+      const user = await this.prisma.user.findUnique({ where: { id: userID } });
+
       const { password, ...result } = user;
 
       return result;
