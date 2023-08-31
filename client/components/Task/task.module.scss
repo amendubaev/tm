@@ -1,0 +1,12 @@
+@import '../../styles/colors.module.scss';
+
+.task_item {
+    padding: 10px;
+    border-radius: 10px;
+    background: $primary-color;
+    cursor: grab;
+    a {
+        color: $text-color;
+        text-decoration: none;
+    }
+}

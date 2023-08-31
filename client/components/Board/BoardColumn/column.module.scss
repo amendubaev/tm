@@ -1,0 +1,18 @@
+@import '../../../styles/colors.module.scss';
+
+.board-column {
+    &_title {
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+    &_box {
+        display: flex;
+        flex-direction: column;
+        grid-gap: 10px;
+        border-radius: 10px;
+        border: 1px solid $text-color;
+        padding: 5px;
+        width: 285px;
+        background: $secondary-color;
+    }
+}

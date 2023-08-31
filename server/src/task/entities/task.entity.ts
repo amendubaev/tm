@@ -1,8 +1,8 @@
-/* eslint-disable prettier/prettier */
 import { ApiProperty } from '@nestjs/swagger';
 import { Task } from '@prisma/client';
 
 export class TaskEntity implements Task {
+  executorId: number;
   @ApiProperty()
   id: number;
 
@@ -32,5 +32,16 @@ export class TaskEntity implements Task {
 
   @ApiProperty()
   authorId: number;
-  
+
+  @ApiProperty()
+  estimatedHours: number;
+
+  @ApiProperty()
+  projectId: number;
+
+  @ApiProperty()
+  boardColId: number;
+
+  @ApiProperty()
+  sort: number;
 }

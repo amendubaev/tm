@@ -1,40 +1,30 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Req,
-  Res,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+//src/auth/auth.controller.ts
+
+import { Body, Controller, Post, UseGuards, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthDto } from './dto/auth.dto';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { AuthEntity } from './entity/auth.entity';
+import { LoginDto } from './dto/login.dto';
+import { SignupDto } from './dto/register.dto';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { LocalAuthGuard } from './guards/local.guard';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
+@ApiTags('auth')
 export class AuthController {
-  constructor(
-    private readonly authService: AuthService,
-    private jwt: JwtService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
-  @Post('register')
-  register(@Body() dto: AuthDto) {
-    return this.authService.register(dto);
-  }
-
+  @UseGuards(AuthGuard('local'))
   @Post('login')
-  login(@Body() dto: AuthDto, @Req() req, @Res() res) {
-    return this.authService.login(dto, req, res);
+  @ApiOkResponse({ type: AuthEntity })
+  async login(@Request() req) {
+    return this.authService.login(req.user);
   }
 
-  @Get('logout')
-  logout(@Req() req, @Res() res) {
-    return this.authService.logout(req, res);
-  }
-
-  @Get('user')
-  async user(@Req() req, @Res() res) {
-    return this.authService.getUser(req, res);
+  @Post('signup')
+  @ApiOkResponse({ type: AuthEntity })
+  signup(@Body() dto: CreateUserDto) {
+    return this.authService.signup(dto);
   }
 }

@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const formatTime = (timer) => {
     const getSeconds = `0${(timer % 60)}`.slice(-2);
     const minutes = `${Math.floor(timer / 60)}`;
@@ -7,4 +5,14 @@ export const formatTime = (timer) => {
     const getHours = `0${Math.floor(timer / 3600)}`.slice(-2);
 
     return `${getHours}:${getMinutes}:${getSeconds}`;
+}
+
+export const slugify = (str) =>{
+  const slug = str.toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+    
+    return slug;
 }

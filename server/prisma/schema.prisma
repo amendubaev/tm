@@ -1,56 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider          = "postgresql"
   url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
+model Project {
+  id          Int           @id @default(autoincrement())
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime?     @updatedAt
+  title       String
+  slug        String        @unique
+  description String?
+  startDate   DateTime?
+  endDate     DateTime?
+  isRenewable Boolean?      @default(false)
+  authorId    Int
+  boards      BoardCol[]
+  author      User          @relation(fields: [authorId], references: [id])
+  tasks       Task[]
+  timetracker TimeTracker[]
+}
+
+model BoardCol {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  sort      Int     @default(autoincrement())
+  projectId Int
+  project   Project  @relation(fields: [projectId], references: [id])
+  tasks     Task[]
 }
 
 model Task {
-  id          Int       @id @default(autoincrement())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime? @updatedAt
-  title       String
-  description String?
-  priority    Int?
-  startDate   DateTime?
-  endDate     DateTime?
-  isRenewable Boolean?  @default(false)
-
-  author      User?         @relation(fields: [authorId], references: [id])
-  authorId    Int?
-  TimeTracker TimeTracker[]
+  id             Int           @id @default(autoincrement())
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime?     @updatedAt
+  title          String
+  description    String?
+  priority       Int?
+  startDate      DateTime?
+  endDate        DateTime?
+  isRenewable    Boolean?      @default(false)
+  authorId       Int
+  executorId     Int
+  projectId      Int
+  estimatedHours Int?
+  boardColId     Int
+  sort           Int?          
+  author         User          @relation("author", fields: [authorId], references: [id])
+  executor       User?         @relation("executor", fields: [executorId], references: [id])
+  boardCol       BoardCol      @relation(fields: [boardColId], references: [id])
+  project        Project       @relation(fields: [projectId], references: [id])
+  timetracker    TimeTracker[]
 }
 
 model User {
-  id           Int       @id @default(autoincrement())
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id           Int           @id @default(autoincrement())
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
   firstName    String?
   lastName     String?
-  email        String    @unique
+  email        String        @unique
   password     String
+  // hash         String
+  // hashedRt     String?
   photo        String?
   departmentId Int?
   phone        String?
   birthday     DateTime?
   male         String?
-  isGuest      Boolean   @default(false)
-
-  tasks       Task[]
-  TimeTracker TimeTracker[]
+  isGuest      Boolean       @default(false)
+  project      Project[]
+  // tasks        Task[]
+  author       Task[]        @relation("author")
+  executor     Task[]        @relation("executor")
+  timetracker  TimeTracker[]
 }
 
 model TimeTracker {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   stoppedAt DateTime?
-  user      User     @relation(fields: [userId], references: [id])
   userId    Int
-  task      Task     @relation(fields: [taskId], references: [id])
   taskId    Int
+  projectId Int
   note      String?
+  project   Project   @relation(fields: [projectId], references: [id])
+  task      Task      @relation(fields: [taskId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
 }
